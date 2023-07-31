@@ -1,2 +1,5 @@
-# lib-giflib
-Library for reading and writing GIF images
+# GIFLIB for Unikraft
+
+This is a port of [GIFLIB](https://giflib.sourceforge.net/) to Unikraft.
+
+Please refer to `README.md` in the main unikraft repository as well as the [Unikraft Homepage](https://unikraft.org/) for further information.
