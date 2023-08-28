@@ -1,0 +1,84 @@
+#  giflib Makefile.uk
+#
+#  Authors: Andrei Tatar <andrei@unikraft.io>
+#
+#  Copyright (c) 2023, Unikraft GmbH and The Unikraft Authors.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions
+#  are met:
+#
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#  3. Neither the name of the copyright holder nor the names of its
+#     contributors may be used to endorse or promote products derived from
+#     this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#  POSSIBILITY OF SUCH DAMAGE.
+#
+
+################################################################################
+# Library registration
+################################################################################
+$(eval $(call addlib_s,libgiflib,$(CONFIG_LIBGIFLIB)))
+
+################################################################################
+# Sources
+################################################################################
+LIBGIFLIB_VERSION=5.2.1
+LIBGIFLIB_URL=https://download.sourceforge.net/giflib/giflib-$(LIBGIFLIB_VERSION).tar.gz
+LIBGIFLIB_DIRNAME=giflib-$(LIBGIFLIB_VERSION)
+#LIBGIFLIB_PATCHDIR=$(LIBGIFLIB_BASE)/patches
+$(eval $(call fetch,libgiflib,$(LIBGIFLIB_URL)))
+#$(eval $(call patch,libgiflib,$(LIBGIFLIB_PATCHDIR),$(LIBGIFLIB_DIRNAME)))
+
+################################################################################
+# Helpers
+################################################################################
+LIBGIFLIB_SRC = $(LIBGIFLIB_ORIGIN)/$(LIBGIFLIB_DIRNAME)
+
+################################################################################
+# Library includes
+################################################################################
+# API
+LIBGIFLIB__API += -I$(LIBGIFLIB_SRC)
+
+CINCLUDES-$(CONFIG_LIBGIFLIB) += $(LIBGIFLIB__API)
+CXXINCLUDES-$(CONFIG_LIBGIFLIB) += $(LIBGIFLIB__API)
+
+################################################################################
+# Global flags
+################################################################################
+LIBGIFLIB_CFLAGS += -std=gnu99
+LIBGIFLIB_CFLAGS-$(call have_gcc) += -Wno-format-truncation
+LIBGIFLIB_CFLAGS += -Wno-sign-compare
+
+################################################################################
+# Library sources
+################################################################################
+# These are taken from the upstream build in the order that `make` builds them.
+# Please take care to maintain the order when updating.
+################################################################################
+LIBGIFLIB_SRCS-y += $(LIBGIFLIB_SRC)/dgif_lib.c
+LIBGIFLIB_SRCS-y += $(LIBGIFLIB_SRC)/egif_lib.c
+LIBGIFLIB_SRCS-y += $(LIBGIFLIB_SRC)/gifalloc.c
+LIBGIFLIB_SRCS-y += $(LIBGIFLIB_SRC)/gif_err.c
+LIBGIFLIB_SRCS-y += $(LIBGIFLIB_SRC)/gif_font.c
+LIBGIFLIB_SRCS-y += $(LIBGIFLIB_SRC)/gif_hash.c
+LIBGIFLIB_SRCS-y += $(LIBGIFLIB_SRC)/openbsd-reallocarray.c
+LIBGIFLIB_SRCS-y += $(LIBGIFLIB_SRC)/qprintf.c
+LIBGIFLIB_SRCS-y += $(LIBGIFLIB_SRC)/quantize.c
+LIBGIFLIB_SRCS-y += $(LIBGIFLIB_SRC)/getarg.c
